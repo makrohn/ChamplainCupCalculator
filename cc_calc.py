@@ -39,6 +39,8 @@ class Results(object):
         root = tree.getroot()
         self.results_data = root
         self.events = {}
+        self.tournament_name = self.results_data[0].attrib["Name"]
+        self.tournament_date = self.results_data[0].attrib["StartDate"]
         for event in self.results_data[0]:
             rankings = []
             for child in event[0]:
