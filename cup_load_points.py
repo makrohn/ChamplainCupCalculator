@@ -34,6 +34,28 @@ def check_fencers(results):
                 family_name = results.fencers[fencer]['LastName']
             )
             fencer.save()
-    
-# for event_results in results.events:
-#     points_awarded = results.event_points(event_results)
+
+
+def check_points(results):
+    for event_results in results.events:
+        points_awarded = results.event_points(event_results)
+        for entry in points_awarded:
+            eid = entry['event_id']
+            fid = entry['fencer_id']
+            foreign_eid = Event.objects.get(event_id=eid)
+            foreign_fid = Fencer.objects.get(fencer_id=fid)
+            exists = Points.objects.filter(competitor_id=fid, event_placed=eid).exists()
+            points_accrued = Points(
+                points=entry['points'],
+                competitor_id=foreign_fid,
+                event_placed=foreign_eid
+            )
+            if exists is False:
+                points_accrued.save()
+            elif exists is True:
+                existing_record = Points.objects.get(competitor_id=fid, event_placed=eid)
+                existing_record.points=entry['points'],
+                existing_record.competitor_id=foreign_fid,
+                existing_record.event_placed=foreign_eid
+                existing_record.save()
+

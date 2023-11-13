@@ -8,7 +8,7 @@ class Event(models.Model):
     """Table to record the name of different events at a tournament"""
     event_name = models.CharField(max_length=200, unique=True)
     tournament_name = models.CharField(max_length=32, unique=False)
-    event_id = models.CharField(max_length=32, unique=True)
+    event_id = models.CharField(max_length=32, primary_key=True)
     event_season = models.CharField(max_length=32, unique=False)
     event_date = models.DateField()
 
@@ -17,7 +17,7 @@ class Fencer(models.Model):
     """Table to record Fencer names"""
     given_name = models.CharField(max_length=200, unique=False)
     family_name = models.CharField(max_length=200, unique=False)
-    fencer_id = models.CharField(max_length=200, unique=True)
+    fencer_id = models.CharField(max_length=200, primary_key=True)
 
 
 class Points(models.Model):
