@@ -3,21 +3,24 @@
     <link type="text/css" rel="stylesheet" href="{% static 'standings.css' %}">
 </head>
 <body>
-Epee Table
 <table>
-<tr>
-    <td>
-    </td>
+    <caption>
+Epee Standings
+    </caption>
+<thead>
+    <th>
+    Fencer
+    </th>
 {% for event, data in epee.events.items %}
-    <td>
+    <th>
         {{data.tournament}}<br />
         {{event}}
-    </td>
+    </th>
 {% endfor %}
-    <td>
+    <th>
         Total
-    </td>
-</tr>
+    </th>
+</thead>
 {% for fencer in epee.fencers %}
 <tr>
     {% for key, value in fencer.items %}
@@ -41,21 +44,24 @@ Epee Table
 {% endfor %}
 </table>
 <br />
-Foil Table
 <table>
-<tr>
-    <td>
-    </td>
+    <caption>
+Foil Standings
+    </caption>
+<thead>
+    <th>
+    Fencer
+    </th>
 {% for event, data in foil.events.items %}
-    <td>
+    <th>
         {{data.tournament}}<br />
         {{event}}
-    </td>
+    </th>
 {% endfor %}
-    <td>
+    <th>
         Total
-    </td>
-</tr>
+    </th>
+</thead>
 {% for fencer in foil.fencers %}
 <tr>
     {% for key, value in fencer.items %}
