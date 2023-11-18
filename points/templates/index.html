@@ -1,0 +1,82 @@
+<head>
+
+</head>
+<body>
+Epee Table
+<table>
+<tr>
+    <td>
+    </td>
+{% for event, data in epee.events.items %}
+    <td>
+        {{data.tournament}}<br />
+        {{event}}
+    </td>
+{% endfor %}
+    <td>
+        Total
+    </td>
+</tr>
+{% for fencer in epee.fencers %}
+<tr>
+    {% for key, value in fencer.items %}
+        {% if key != "total" %}
+    <td>
+        {{ key }}
+    </td>
+        {% endif %}
+        {% for cell, points in value.items %}
+            {% for position, value in points.items %}
+    <td>
+            {{ value }}
+    </td>
+            {% endfor %}
+    <td>
+            {{ fencer.total }}
+        {% endfor %}
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>
+<br />
+Foil Table
+<table>
+<tr>
+    <td>
+    </td>
+{% for event, data in foil.events.items %}
+    <td>
+        {{data.tournament}}<br />
+        {{event}}
+    </td>
+{% endfor %}
+    <td>
+        Total
+    </td>
+</tr>
+{% for fencer in foil.fencers %}
+<tr>
+    {% for key, value in fencer.items %}
+        {% if key != "total" %}
+    <td>
+        {{ key }}
+    </td>
+        {% endif %}
+        {% for cell, points in value.items %}
+            {% for position, value in points.items %}
+    <td>
+            {{ value }}
+    </td>
+            {% endfor %}
+    <td>
+            {{ fencer.total }}
+        {% endfor %}
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>
+
+<br />
+</body>

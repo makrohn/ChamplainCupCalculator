@@ -14,10 +14,10 @@ def check_events(results, season):
         eid = results.events[event]["EventID"]
         exists = Event.objects.filter(event_id=eid).exists()
         if exists is False:
-            name = (results.events[event]["AgeLimitMin"] + " " +
-                    results.events[event]["Gender"] + " " +
+            name = ''
+            name = results.events[event]["AgeLimitMin"] + " " + \
+                    results.events[event]["Gender"] + " " + \
                     results.events[event]["Weapon"]
-                    ),
             event = Event(
                 event_name = name,
                 tournament_name = results.tournament_name,
