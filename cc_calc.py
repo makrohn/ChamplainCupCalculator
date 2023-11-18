@@ -77,17 +77,9 @@ class Results(object):
             points_awarded["event_id"] = event["EventID"]
             if place < bonus_points_cutoff:
                 bonus_points = event_max_points - place + 1
-                points_awarded['points'] += bonus_points
+                if bonus_points > 0:
+                    points_awarded['points'] += bonus_points
             # print(points_awarded)
             event_points.append(points_awarded)
         print(event_points)
         return event_points
-
-
-# results = Results(askFredFile)
-# for event in results.events:
-#     print(results.events[event]['rankings'])
-# for event_results in results.events:
-#     results.event_points(event_results)
-# for fencer in results.fencers:
-#     print(results.fencers[fencer])

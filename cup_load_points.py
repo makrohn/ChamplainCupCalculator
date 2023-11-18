@@ -64,3 +64,10 @@ def check_points(results):
                 existing_record.competitor_id=foreign_fid,
                 existing_record.event_placed=foreign_eid
                 existing_record.save()
+
+def load_all(file, season):
+    """Load everything in a file"""
+    results = load_results(file)
+    check_events(results, season)
+    check_fencers(results)
+    check_points(results)
