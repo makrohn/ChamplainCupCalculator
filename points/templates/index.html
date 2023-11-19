@@ -5,7 +5,7 @@
 <body>
 <table>
     <caption>
-Epee Standings
+EPEE STANDINGS
     </caption>
 <thead>
     <th>
@@ -14,7 +14,7 @@ Epee Standings
 {% for event, data in epee.events.items %}
     <th>
         {{data.tournament}}<br />
-        {{event}}
+        {{data.name}}
     </th>
 {% endfor %}
     <th>
@@ -46,7 +46,7 @@ Epee Standings
 <br />
 <table>
     <caption>
-Foil Standings
+FOIL STANDINGS
     </caption>
 <thead>
     <th>
@@ -55,7 +55,7 @@ Foil Standings
 {% for event, data in foil.events.items %}
     <th>
         {{data.tournament}}<br />
-        {{event}}
+        {{data.name}}
     </th>
 {% endfor %}
     <th>
@@ -63,6 +63,47 @@ Foil Standings
     </th>
 </thead>
 {% for fencer in foil.fencers %}
+<tr>
+    {% for key, value in fencer.items %}
+        {% if key != "total" %}
+    <td>
+        {{ key }}
+    </td>
+        {% endif %}
+        {% for cell, points in value.items %}
+            {% for position, value in points.items %}
+    <td>
+            {{ value }}
+    </td>
+            {% endfor %}
+    <td>
+            {{ fencer.total }}
+        {% endfor %}
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>
+<br />
+<table>
+    <caption>
+SABER STANDINGS
+    </caption>
+<thead>
+    <th>
+    Fencer
+    </th>
+{% for event, data in saber.events.items %}
+    <th>
+        {{data.tournament}}<br />
+        {{data.name}}
+    </th>
+{% endfor %}
+    <th>
+        Total
+    </th>
+</thead>
+{% for fencer in saber.fencers %}
 <tr>
     {% for key, value in fencer.items %}
         {% if key != "total" %}

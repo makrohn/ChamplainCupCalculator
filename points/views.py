@@ -22,7 +22,11 @@ def get_standings(weapon):
         event_values['cell_id'] = cell_id
         cell_id += 1
         event_values['tournament'] = event.tournament_name
-        weapon_events[event.event_name] = event_values
+        event_values['name'] = event.event_name
+        print(event_values)
+        weapon_events[event.event_id] = event_values
+    weapon_events = dict(sorted(weapon_events.items(), key=lambda k_v: k_v[1]['cell_id']))
+    print(weapon_events)
 
     weapon_lines = []
     for fencer in fencers:
@@ -37,8 +41,9 @@ def get_standings(weapon):
             )
         for entry in points_earned:
             event_name = entry.event_placed.event_name
+            event_id = entry.event_placed.event_id
             points = entry.points
-            position = weapon_events[event_name]['cell_id']
+            position = weapon_events[event_id]['cell_id']
             row[fencer_name]['points'][position] = points
             total += points
         for i in range(1,cell_id):
@@ -62,10 +67,14 @@ def index(request):
     context = {}
 
     epee_standings = get_standings("Epee")
+    print(epee_standings)
     context['epee'] = epee_standings
 
     foil_standings = get_standings("Foil")
     context['foil'] = foil_standings
+
+    saber_standings = get_standings("Saber")
+    context['saber'] = saber_standings
 
     template = loader.get_template('index.html')
     return HttpResponse(template.render(context, request))

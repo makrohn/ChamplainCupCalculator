@@ -1,17 +1,22 @@
 table, td {
-    border: 0px solid;
-    padding: 2px;
-    padding-right: 30px;
+    padding: 3px;
+    padding-right: 8px;
+    padding-left: 8px;
     text-align: center;
   }
 
+th {
+    text-wrap: wrap;
+}
+
 table {
     border: 1px solid;
+    width: 100%;
 }
 
 caption {
     background-color: #297260;
-    padding: 10px;
+    padding: 15px;
     color: #f2f2f2;
     font-size: larger;
 }

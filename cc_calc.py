@@ -31,6 +31,8 @@ tournament_tiers = {
         },
 }
 
+EXCEPTED_RATING_LIMITS = ["Unrated"]
+
 class Results(object):
     """The results of a tournament"""
     def __init__(self, ask_fred_file):
@@ -58,9 +60,13 @@ class Results(object):
         """Calculate the number of points awarded to each fencer for the event"""
         event = self.events[event_id]
         event_rating = self.events[event_id]['Rating']
+        event_gender = self.events[event_id]['Gender']
+        event_rating_limit = self.events[event_id]['RatingLimit']
         for tier, stuff in tournament_tiers.items():
             if event_rating in stuff['strengths']:
                 event_max_points = stuff['first_place_points']
+        if event_gender != "Mixed" or event_rating_limit in EXCEPTED_RATING_LIMITS:
+            event_max_points = 2
         # print(event["AgeLimitMin"],event["Gender"],event["Weapon"],event_rating)
         bonus_points_cutoff = float(event['Entries']) * CUTOFF_MULTIPLIER
         # print(bonus_points_cutoff)

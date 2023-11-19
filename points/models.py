@@ -6,7 +6,7 @@ from django.db import models
 
 class Event(models.Model):
     """Table to record the name of different events at a tournament"""
-    event_name = models.CharField(max_length=200, unique=True)
+    event_name = models.CharField(max_length=200, unique=False)
     tournament_name = models.CharField(max_length=32, unique=False)
     event_id = models.CharField(max_length=32, primary_key=True)
     event_season = models.CharField(max_length=32, unique=False)

@@ -14,10 +14,17 @@ def check_events(results, season):
         eid = results.events[event]["EventID"]
         exists = Event.objects.filter(event_id=eid).exists()
         if exists is False:
-            name = ''
-            name = results.events[event]["AgeLimitMin"] + " " + \
-                    results.events[event]["Gender"] + " " + \
-                    results.events[event]["Weapon"]
+            weapon = results.events[event]["Weapon"]
+            rating_limit = results.events[event]["RatingLimit"]
+            gender = results.events[event]["Gender"]
+            age_limit = results.events[event]["AgeLimitMin"]
+            if gender != "Mixed":
+                gender = gender + "'s"
+            name = gender + " " + weapon
+            if age_limit != "None":
+                name =  age_limit + " " + name
+            if rating_limit != "None":
+                name = rating_limit + " " + name
             event = Event(
                 event_name = name,
                 tournament_name = results.tournament_name,
