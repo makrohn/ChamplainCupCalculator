@@ -23,10 +23,8 @@ def get_standings(weapon):
         cell_id += 1
         event_values['tournament'] = event.tournament_name
         event_values['name'] = event.event_name
-        print(event_values)
         weapon_events[event.event_id] = event_values
     weapon_events = dict(sorted(weapon_events.items(), key=lambda k_v: k_v[1]['cell_id']))
-    print(weapon_events)
 
     weapon_lines = []
     for fencer in fencers:
@@ -67,7 +65,6 @@ def index(request):
     context = {}
 
     epee_standings = get_standings("Epee")
-    print(epee_standings)
     context['epee'] = epee_standings
 
     foil_standings = get_standings("Foil")

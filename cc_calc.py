@@ -67,9 +67,7 @@ class Results(object):
                 event_max_points = stuff['first_place_points']
         if event_gender != "Mixed" or event_rating_limit in EXCEPTED_RATING_LIMITS:
             event_max_points = 2
-        # print(event["AgeLimitMin"],event["Gender"],event["Weapon"],event_rating)
         bonus_points_cutoff = float(event['Entries']) * CUTOFF_MULTIPLIER
-        # print(bonus_points_cutoff)
         event_points = []
         for competitor in event['rankings']:
             fencer_id = 'fencer' + competitor['CompetitorID']
@@ -85,7 +83,5 @@ class Results(object):
                 bonus_points = event_max_points - place + 1
                 if bonus_points > 0:
                     points_awarded['points'] += bonus_points
-            # print(points_awarded)
             event_points.append(points_awarded)
-        print(event_points)
         return event_points
