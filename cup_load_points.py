@@ -25,27 +25,24 @@ def check_events(results, season):
                 name =  age_limit + " " + name
             if rating_limit != "None":
                 name = rating_limit + " " + name
-            event = Event(
+            event_details = Event(
                 event_name = name,
                 tournament_name = results.tournament_name,
                 event_id = eid,
                 event_season = season,
                 event_date = results.tournament_date,
             )
-            event.save()
+            event_details.save()
 
 def check_fencers(results):
     """Make sure all the fencer exist in the database"""
     for fencer in results.fencers:
         fid = results.fencers[fencer]['FencerID']
-        exists = Fencer.objects.filter(fencer_id=fid).exists()
-        if exists is False:
-            fencer = Fencer(
-                fencer_id = fid,
-                given_name = results.fencers[fencer]['FirstName'],
-                family_name = results.fencers[fencer]['LastName']
-            )
-            fencer.save()
+
+        Fencer.objects.get_or_create(fencer_id=fid, defaults={
+            'given_name': results.fencers[fencer]['FirstName'],
+            'family_name': results.fencers[fencer]['LastName']
+        })
 
 
 def check_points(results):
@@ -57,20 +54,12 @@ def check_points(results):
             fid = entry['fencer_id']
             foreign_eid = Event.objects.get(event_id=eid)
             foreign_fid = Fencer.objects.get(fencer_id=fid)
-            exists = Points.objects.filter(competitor_id=fid, event_placed=eid).exists()
-            points_accrued = Points(
-                points=entry['points'],
+            
+            Points.objects.update_or_create(
                 competitor_id=foreign_fid,
-                event_placed=foreign_eid
+                event_placed=foreign_eid,
+                defaults={'points': entry['points']}
             )
-            if exists is False:
-                points_accrued.save()
-            elif exists is True:
-                existing_record = Points.objects.get(competitor_id=fid, event_placed=eid)
-                existing_record.points=entry['points'],
-                existing_record.competitor_id=foreign_fid,
-                existing_record.event_placed=foreign_eid
-                existing_record.save()
 
 def load_all(file, season):
     """Load everything in a file"""

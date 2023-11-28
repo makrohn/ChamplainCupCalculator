@@ -4,6 +4,8 @@ Champlain Cup Points System."""
 import xml.etree.ElementTree as ET
 
 CUTOFF_MULTIPLIER = 0.8
+DEFAULT_MAX_POINTS = 2
+
 tournament_tiers = {
     "tier1": {
         "strengths": ["A4", "A3", "B3"],
@@ -44,9 +46,7 @@ class Results(object):
         self.tournament_name = self.results_data[0].attrib["Name"]
         self.tournament_date = self.results_data[0].attrib["StartDate"]
         for event in self.results_data[0]:
-            rankings = []
-            for child in event[0]:
-                rankings.append(child.attrib)
+            rankings = [child.attrib for child in event[0]]
             event_info = event.attrib
             event_info['rankings'] = rankings
             self.events["event" + event_info['EventID']] = event_info
@@ -66,7 +66,7 @@ class Results(object):
             if event_rating in stuff['strengths']:
                 event_max_points = stuff['first_place_points']
         if event_gender != "Mixed" or event_rating_limit in EXCEPTED_RATING_LIMITS:
-            event_max_points = 2
+            event_max_points = DEFAULT_MAX_POINTS
         bonus_points_cutoff = float(event['Entries']) * CUTOFF_MULTIPLIER
         event_points = []
         for competitor in event['rankings']:
