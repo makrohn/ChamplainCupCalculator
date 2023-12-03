@@ -3,170 +3,20 @@
     <link type="text/css" rel="stylesheet" href="{% static 'standings.css' %}">
 </head>
 <body>
-<table>
-    <caption>
-EPEE STANDINGS
-    </caption>
-<thead>
-    <th>
-    Fencer
-    </th>
-{% for event, data in epee.events.items %}
-    <th>
-        {{data.tournament}}<br />
-        {{data.name}}
-    </th>
-{% endfor %}
-    <th>
-        Total
-    </th>
-</thead>
-{% for fencer in epee.fencers %}
-<tr>
-    {% for key, value in fencer.items %}
-        {% if key != "total" %}
-    <td>
-        {{ key }}
-    </td>
-        {% endif %}
-        {% for cell, points in value.items %}
-            {% for position, value in points.items %}
-    <td>
-            {{ value }}
-    </td>
-            {% endfor %}
-    <td>
-            {{ fencer.total }}
-        {% endfor %}
-    </td>
-    {% endfor %}
-</tr>
-{% endfor %}
-</table>
-<br />
-<table>
-    <caption>
-FOIL STANDINGS
-    </caption>
-<thead>
-    <th>
-    Fencer
-    </th>
-{% for event, data in foil.events.items %}
-    <th>
-        {{data.tournament}}<br />
-        {{data.name}}
-    </th>
-{% endfor %}
-    <th>
-        Total
-    </th>
-</thead>
-{% for fencer in foil.fencers %}
-<tr>
-    {% for key, value in fencer.items %}
-        {% if key != "total" %}
-    <td>
-        {{ key }}
-    </td>
-        {% endif %}
-        {% for cell, points in value.items %}
-            {% for position, value in points.items %}
-    <td>
-            {{ value }}
-    </td>
-            {% endfor %}
-    <td>
-            {{ fencer.total }}
-        {% endfor %}
-    </td>
-    {% endfor %}
-</tr>
-{% endfor %}
-</table>
-<br />
-<table>
-    <caption>
-SABER STANDINGS
-    </caption>
-<thead>
-    <th>
-    Fencer
-    </th>
-{% for event, data in saber.events.items %}
-    <th>
-        {{data.tournament}}<br />
-        {{data.name}}
-    </th>
-{% endfor %}
-    <th>
-        Total
-    </th>
-</thead>
-{% for fencer in saber.fencers %}
-<tr>
-    {% for key, value in fencer.items %}
-        {% if key != "total" %}
-    <td>
-        {{ key }}
-    </td>
-        {% endif %}
-        {% for cell, points in value.items %}
-            {% for position, value in points.items %}
-    <td>
-            {{ value }}
-    </td>
-            {% endfor %}
-    <td>
-            {{ fencer.total }}
-        {% endfor %}
-    </td>
-    {% endfor %}
-</tr>
-{% endfor %}
-</table>
+
+{% include "weapon_table.html" with weapon=epee weapon_name="EPEE" %}
 
 <br />
-<table>
-    <caption>
-YOUTH FOIL STANDINGS
-    </caption>
-<thead>
-    <th>
-    Fencer
-    </th>
-{% for event, data in youth_foil.events.items %}
-    <th>
-        {{data.tournament}}<br />
-        {{data.name}}
-    </th>
-{% endfor %}
-    <th>
-        Total
-    </th>
-</thead>
-{% for fencer in youth_foil.fencers %}
-<tr>
-    {% for key, value in fencer.items %}
-        {% if key != "total" %}
-    <td>
-        {{ key }}
-    </td>
-        {% endif %}
-        {% for cell, points in value.items %}
-            {% for position, value in points.items %}
-    <td>
-            {{ value }}
-    </td>
-            {% endfor %}
-    <td>
-            {{ fencer.total }}
-        {% endfor %}
-    </td>
-    {% endfor %}
-</tr>
-{% endfor %}
-</table>
+
+{% include "weapon_table.html" with weapon=foil weapon_name="FOIL" %}
+
+<br />
+
+{% include "weapon_table.html" with weapon=saber weapon_name="SABER" %}
+
+<br />
+
+{% include "weapon_table.html" with weapon=youth_foil weapon_name="YOUTH FOIL" %}
 
 <br />
 </body>
