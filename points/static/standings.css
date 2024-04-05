@@ -24,3 +24,7 @@ caption {
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
+h1 {
+    text-align: center;
+}

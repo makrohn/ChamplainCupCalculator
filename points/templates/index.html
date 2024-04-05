@@ -3,20 +3,14 @@
     <link type="text/css" rel="stylesheet" href="{% static 'standings.css' %}">
 </head>
 <body>
-
+<a href="/">USFA Green Mountain Division Home</a>
+<h1> Champlain Cup Standings</h1>
 {% include "weapon_table.html" with weapon=epee weapon_name="EPEE" %}
-
 <br />
-
 {% include "weapon_table.html" with weapon=foil weapon_name="FOIL" %}
-
 <br />
-
 {% include "weapon_table.html" with weapon=saber weapon_name="SABER" %}
-
 <br />
-
 {% include "weapon_table.html" with weapon=youth_foil weapon_name="YOUTH FOIL" %}
-
 <br />
 </body>
