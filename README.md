@@ -19,3 +19,5 @@ Every year, the Green Mountain Division hosts the Champlain Cup, to promote part
 ## Live-ish Results
 Points can currently be found at https://www.gmdfencing.org/points.html
 I am lazy and haven't yet set up django to run alongside the WordPress installation there, so right now, I'm loading them all in on my local laptop and then copying the HTML from localhost/points to a static HTML file on the server.
+## Loading points
+Points are loaded from AskFred files from FencingTime, which are XML formatted. I did it this way because, at the time that I created this, I didn't realize yet that I could download much more straightforward CSV files from AskFred for completed tournaments. Put the .frd file into the same directory as the program, and run a django shell. import cup_load_points, and then use cups_load_points.load_all(file_name, season_name)
