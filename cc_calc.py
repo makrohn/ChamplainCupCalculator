@@ -34,6 +34,7 @@ tournament_tiers = {
 }
 
 EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder"]
+EXCEPTED_AGE_LIMITS = ["VetCombined"]
 
 class Results(object):
     """The results of a tournament"""
@@ -62,10 +63,13 @@ class Results(object):
         event_rating = self.events[event_id]['Rating']
         event_gender = self.events[event_id]['Gender']
         event_rating_limit = self.events[event_id]['RatingLimit']
+        event_age_limit = self.events[event_id]['AgeLimitMin']
         for tier, stuff in tournament_tiers.items():
             if event_rating in stuff['strengths']:
                 event_max_points = stuff['first_place_points']
-        if event_gender != "Mixed" or event_rating_limit in EXCEPTED_RATING_LIMITS:
+        if (event_gender != "Mixed" or 
+            event_rating_limit in EXCEPTED_RATING_LIMITS or 
+            event_age_limit in EXCEPTED_AGE_LIMITS):
             event_max_points = DEFAULT_MAX_POINTS
         bonus_points_cutoff = float(event['Entries']) * CUTOFF_MULTIPLIER
         event_points = []

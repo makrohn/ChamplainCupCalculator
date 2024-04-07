@@ -5,6 +5,28 @@
 <body>
 <a href="/">USFA Green Mountain Division Home</a>
 <h1> Champlain Cup Standings</h1>
+<strong>How points are calculated:</strong>
+<ul><li>Every participant in every event earns one participation point.</li>
+<li>In events limited by age, gender, or division, or events with rating caps of D or less:
+    <ul>
+    <li>2 additional points to first place, one additional point to second place.</li>
+    </ul></li>
+<li>In all other events:
+    <ul>
+    <li>The top 80% of placed fencers earn bonus points.</li>
+    <li>Each place earns one bonus point less than the next higher place.</li>
+    <li>First Place bonus depends on the strength of the event:
+    <ul>
+        <li>A4, A3, B3: 32 points</li>
+        <li>A2, B2, C3: 24 points</li>
+        <li>B1: 20 points</li>
+        <li>C1, C2: 16 points</li>
+        <li>D1: 12 points</li>
+        <li>E1: 6 points</li>
+    </ul></li>
+    </ul></li>
+</ul>
+
 {% include "weapon_table.html" with weapon=epee weapon_name="EPEE" %}
 <br />
 {% include "weapon_table.html" with weapon=foil weapon_name="FOIL" %}
