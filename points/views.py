@@ -92,11 +92,8 @@ def index(request):
     saber_standings = get_standings("Saber", "adult")
     context['saber'] = saber_standings
 
-    youth_foil_standings = get_standings("Foil", "youth")
-    context['youth_foil'] = youth_foil_standings
-
-    youth_epee_standings = get_standings("Epee", "youth")
-    context['youth_epee'] = youth_epee_standings
+    youth_standings = get_standings("", "youth")
+    context['youth'] = youth_standings
 
     leaders_standings = get_standings("","adult")
     context['leaders'] = leaders_standings
