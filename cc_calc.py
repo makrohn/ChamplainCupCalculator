@@ -34,7 +34,7 @@ tournament_tiers = {
 }
 
 EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder"]
-EXCEPTED_AGE_LIMITS = ["VetCombined"]
+EXCEPTED_AGE_LIMITS = ["VetCombined", "Y12"]
 
 class Results(object):
     """The results of a tournament"""

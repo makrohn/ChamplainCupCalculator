@@ -3,7 +3,8 @@
     <link type="text/css" rel="stylesheet" href="{% static 'standings.css' %}">
 </head>
 <body>
-<a href="/">USFA Green Mountain Division Home</a>
+<a href="/">USFA Green Mountain Division Home</a><br />
+<a href="https://github.com/makrohn/ChamplainCupCalculator">Champlain Cup Calculator Code</a>
 <h1> Champlain Cup Standings</h1>
 <strong>How points are calculated:</strong>
 <ul><li>Every participant in every event earns one participation point.</li>
@@ -34,5 +35,7 @@
 {% include "weapon_table.html" with weapon=saber weapon_name="SABER" %}
 <br />
 {% include "weapon_table.html" with weapon=youth_foil weapon_name="YOUTH FOIL" %}
+<br />
+{% include "weapon_table.html" with weapon=youth_epee weapon_name="YOUTH EPEE" %}
 <br />
 </body>

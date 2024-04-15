@@ -95,5 +95,8 @@ def index(request):
     youth_foil_standings = get_standings("Foil", "youth")
     context['youth_foil'] = youth_foil_standings
 
+    youth_epee_standings = get_standings("Epee", "youth")
+    context['youth_epee'] = youth_epee_standings
+
     template = loader.get_template('index.html')
     return HttpResponse(template.render(context, request))
