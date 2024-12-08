@@ -31,10 +31,14 @@ tournament_tiers = {
         "strengths": ["E1"],
         "first_place_points": 6
         },
+    "tier7": {
+        "strengths": ["NR"],
+        "first_place_points": 3
+        },
 }
 
 EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder"]
-EXCEPTED_AGE_LIMITS = ["VetCombined", "Y12"]
+EXCEPTED_AGE_LIMITS = ["VetCombined", "Y12", "Junior"]
 
 class Results(object):
     """The results of a tournament"""
