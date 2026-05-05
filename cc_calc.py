@@ -16,7 +16,7 @@ tournament_tiers = {
         "first_place_points": 24
         },
     "tier3": {
-        "strengths": ["B1"],
+        "strengths": ["A1", "B1"],
         "first_place_points": 20
         },
     "tier4": {
@@ -37,7 +37,7 @@ tournament_tiers = {
         },
 }
 
-EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder"]
+EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder", "Div3"]
 EXCEPTED_AGE_LIMITS = ["VetCombined", "Y12", "Junior"]
 
 class Results(object):
@@ -87,7 +87,7 @@ class Results(object):
             points_awarded['last_name'] = cfn['LastName']
             points_awarded["fencer_id"] = competitor["CompetitorID"]
             points_awarded["event_id"] = event["EventID"]
-            if place < bonus_points_cutoff:
+            if place <= bonus_points_cutoff:
                 bonus_points = event_max_points - place + 1
                 if bonus_points > 0:
                     points_awarded['points'] += bonus_points
