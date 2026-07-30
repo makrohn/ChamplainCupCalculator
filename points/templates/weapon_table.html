@@ -1,20 +1,36 @@
 <table>
     <caption>
-{{weapon_name}} STANDINGS
+        {{ weapon_name }} STANDINGS
     </caption>
-<thead>
-    <th>
-    Fencer
-    </th>{% for event, data in weapon.events.items %}
-    <th>{{data.tournament}}<br />
-        {{data.name}}
-    </th>{% endfor %}
-    <th>
-        Total
-    </th>
-</thead>{% for fencer in weapon.fencers %}
-<tr>{% for key, value in fencer.items %}{% if key != "total" %}
-    <td>{{ key }}</td>{% endif %} {% for cell, points in value.items %} {% for position, value in points.items %}<td>{{ value }}</td>{% endfor %}
-    <td>{{ fencer.total }}{% endfor %}</td>{% endfor %}
-</tr>{% endfor %}
+    <thead>
+        <tr>
+            <th>Place</th>
+            <th>Fencer</th>
+            {% for event, data in weapon.events.items %}
+            <th>
+                {{ data.tournament }}<br />
+                {{ data.name }}
+            </th>
+            {% endfor %}
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fencer in weapon.fencers %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            {% for key, value in fencer.items %}
+                {% if key != "total" %}
+                    <td>{{ key }}</td>
+                {% endif %} 
+                {% for cell, points in value.items %} 
+                    {% for position, value in points.items %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    <td>{{ fencer.total }}</td>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>

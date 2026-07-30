@@ -1,0 +1,27 @@
+<table>
+    <caption>
+        {{ weapon_name }} STANDINGS
+    </caption>
+    <thead>
+        <tr>
+            <th>Place</th>
+            <th>Fencer</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fencer in weapon.fencers %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            {% for key, value in fencer.items %}
+                {% if key != "total" %}
+                    <td>{{ key }}</td>
+                {% endif %} 
+                {% for cell, points in value.items %}
+                    <td>{{ fencer.total }}</td>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
