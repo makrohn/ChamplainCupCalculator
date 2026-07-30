@@ -1,95 +1,149 @@
-"""A module to take AskFRED results exported from FencingTime, and convert to
-Champlain Cup Points System."""
+"""A module to take AskFRED results exported from FencingTime (XML or CSV), 
+and convert to Champlain Cup Points System."""
 
+import csv
 import xml.etree.ElementTree as ET
 
 CUTOFF_MULTIPLIER = 0.8
 DEFAULT_MAX_POINTS = 2
 
 tournament_tiers = {
-    "tier1": {
-        "strengths": ["A4", "A3", "B3"],
-        "first_place_points": 32
-        },
-    "tier2": {
-        "strengths": ["A2", "B2", "C3"],
-        "first_place_points": 24
-        },
-    "tier3": {
-        "strengths": ["A1", "B1"],
-        "first_place_points": 20
-        },
-    "tier4": {
-        "strengths": ["C1", "C2"],
-        "first_place_points": 16
-        },
-    "tier5": {
-        "strengths": ["D1"],
-        "first_place_points": 12
-        },
-    "tier6": {
-        "strengths": ["E1"],
-        "first_place_points": 6
-        },
-    "tier7": {
-        "strengths": ["NR"],
-        "first_place_points": 3
-        },
+    "tier1": {"strengths": ["A4", "A3", "B3"], "first_place_points": 32},
+    "tier2": {"strengths": ["A2", "B2", "C3"], "first_place_points": 24},
+    "tier3": {"strengths": ["A1", "B1"], "first_place_points": 20},
+    "tier4": {"strengths": ["C1", "C2"], "first_place_points": 16},
+    "tier5": {"strengths": ["D1"], "first_place_points": 12},
+    "tier6": {"strengths": ["E1"], "first_place_points": 6},
+    "tier7": {"strengths": ["NR", "U"], "first_place_points": 3},
 }
 
 EXCEPTED_RATING_LIMITS = ["Unrated", "EUnder", "Div3"]
 EXCEPTED_AGE_LIMITS = ["VetCombined", "Y12", "Junior"]
 
+
 class Results(object):
     """The results of a tournament"""
+
     def __init__(self, ask_fred_file):
-        """Open the askFred file and return something Python can use"""
+        """Parse either XML (.frd) or CSV file into standard event and fencer data structures"""
+        self.events = {}
+        self.fencers = {}
+
+        if ask_fred_file.endswith(".csv"):
+            self._parse_csv(ask_fred_file)
+        else:
+            self._parse_xml(ask_fred_file)
+
+    def _parse_xml(self, ask_fred_file):
+        """Original XML parser logic"""
         tree = ET.parse(ask_fred_file)
         root = tree.getroot()
         self.results_data = root
-        self.events = {}
         self.tournament_name = self.results_data[0].attrib["Name"]
         self.tournament_date = self.results_data[0].attrib["StartDate"]
+
         for event in self.results_data[0]:
             rankings = [child.attrib for child in event[0]]
             event_info = event.attrib
             event_info['rankings'] = rankings
             self.events["event" + event_info['EventID']] = event_info
-        self.fencers = {}
+
         for fencer in self.results_data[2]:
             fencer_info = fencer.attrib
             fencer_info['points'] = 0
             self.fencers['fencer' + fencer_info['FencerID']] = fencer_info
 
-    def event_points(self,event_id):
+    def _parse_csv(self, file_path):
+        """CSV parser mapping CSV columns to the expected dict structures"""
+        with open(file_path, mode="r", encoding="utf-8", errors="ignore") as f:
+            reader = csv.DictReader(f)
+
+            for row in reader:
+                # Clean headers and values
+                row = {k.strip(): (v.strip() if v else "") for k, v in row.items() if k}
+
+                # Tournament metadata
+                self.tournament_name = row.get("Tournament", "Unknown Tournament")
+                self.tournament_date = row.get("Date", "")
+
+                # Key event by Event Name
+                event_name = row.get("Event", "Unknown Event")
+                event_key = "event" + event_name
+
+                if event_key not in self.events:
+                    self.events[event_key] = {
+                        "EventID": event_name,
+                        "Name": event_name,
+                        "Rating": row.get("Event Rating", "NR"),
+                        "Gender": row.get("Event Gender", "Mixed"),
+                        "RatingLimit": row.get("Rating Restriction", ""),
+                        "AgeLimitMin": row.get("Age Resitrction", ""),  # Matches CSV column typo
+                        "Entries": row.get("Event Size", "0"),
+                        "rankings": []
+                    }
+
+                # Fencer metadata
+                usfa_num = row.get("Usfa Number", "")
+                first_name = row.get("Competitor First Name", "")
+                last_name = row.get("Competitor Last Name", "")
+                fencer_id = usfa_num if usfa_num else f"{first_name}_{last_name}".lower()
+                fencer_key = "fencer" + fencer_id
+
+                if fencer_key not in self.fencers:
+                    self.fencers[fencer_key] = {
+                        "FencerID": fencer_id,
+                        "FirstName": first_name,
+                        "LastName": last_name,
+                        "points": 0
+                    }
+
+                # Add competitor ranking entry
+                self.events[event_key]["rankings"].append({
+                    "CompetitorID": fencer_id,
+                    "Place": row.get("Place", "0"),
+                    "EventID": event_name
+                })
+
+    def event_points(self, event_id):
         """Calculate the number of points awarded to each fencer for the event"""
         event = self.events[event_id]
-        event_rating = self.events[event_id]['Rating']
-        event_gender = self.events[event_id]['Gender']
-        event_rating_limit = self.events[event_id]['RatingLimit']
-        event_age_limit = self.events[event_id]['AgeLimitMin']
+        event_rating = event['Rating']
+        event_gender = event['Gender']
+        event_rating_limit = event['RatingLimit']
+        event_age_limit = event['AgeLimitMin']
+
+        event_max_points = DEFAULT_MAX_POINTS
         for tier, stuff in tournament_tiers.items():
             if event_rating in stuff['strengths']:
                 event_max_points = stuff['first_place_points']
+                break
+
         if (event_gender != "Mixed" or 
             event_rating_limit in EXCEPTED_RATING_LIMITS or 
             event_age_limit in EXCEPTED_AGE_LIMITS):
             event_max_points = DEFAULT_MAX_POINTS
+
         bonus_points_cutoff = float(event['Entries']) * CUTOFF_MULTIPLIER
         event_points = []
+
         for competitor in event['rankings']:
             fencer_id = 'fencer' + competitor['CompetitorID']
-            points_awarded = {}
-            points_awarded['points'] = 1
-            place = int(competitor['Place'])
+            points_awarded = {
+                'points': 1,
+                'fencer_id': competitor["CompetitorID"],
+                'event_id': event["EventID"],
+            }
+            place = int(competitor['Place']) if str(competitor['Place']).isdigit() else 0
+
             cfn = self.fencers[fencer_id]
             points_awarded['first_name'] = cfn['FirstName']
             points_awarded['last_name'] = cfn['LastName']
-            points_awarded["fencer_id"] = competitor["CompetitorID"]
-            points_awarded["event_id"] = event["EventID"]
-            if place <= bonus_points_cutoff:
+
+            if 0 < place <= bonus_points_cutoff:
                 bonus_points = event_max_points - place + 1
                 if bonus_points > 0:
                     points_awarded['points'] += bonus_points
+
             event_points.append(points_awarded)
+
         return event_points

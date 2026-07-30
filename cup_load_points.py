@@ -1,69 +1,65 @@
-"""Module to load an AskFRED results file into the Database"""
-
+from datetime import datetime
 import cc_calc
-from points.models import Fencer,Event,Points
+from points.models import Event, Fencer, Points
 
-def load_results(ask_fred_file):
-    """Parse the results into something we can use"""
-    results = cc_calc.Results(ask_fred_file)
-    return results
 
-def check_events(results, season):
-    """Make sure all the events exist in the database"""
-    for event in results.events:
-        eid = results.events[event]["EventID"]
-        exists = Event.objects.filter(event_id=eid).exists()
-        if exists is False:
-            weapon = results.events[event]["Weapon"]
-            rating_limit = results.events[event]["RatingLimit"]
-            gender = results.events[event]["Gender"]
-            age_limit = results.events[event]["AgeLimitMin"]
-            if gender != "Mixed":
-                gender = gender + "'s"
-            name = gender + " " + weapon
-            if age_limit != "None":
-                name =  age_limit + " " + name
-            if rating_limit != "None":
-                name = rating_limit + " " + name
-            event_details = Event(
-                event_name = name,
-                tournament_name = results.tournament_name,
-                event_id = eid,
-                event_season = season,
-                event_date = results.tournament_date,
+def load_points_from_csv(file_path: str, season_name: str = "2025-2026") -> None:
+    """Loads results using cc_calc.Results and writes to Django DB models."""
+    calc_results = cc_calc.Results(file_path)
+
+    for event_key, event_info in calc_results.events.items():
+        event_name = event_info["Name"]
+        tournament_name = calc_results.tournament_name
+
+        try:
+            event_date = datetime.strptime(calc_results.tournament_date, "%Y-%m-%d").date()
+        except ValueError:
+            event_date = datetime.now().date()
+
+        event_id = f"{tournament_name}_{event_name}"
+
+        # 1. Event DB Object
+        event_obj, _ = Event.objects.get_or_create(
+            event_id=event_id,
+            defaults={
+                "event_name": event_name,
+                "tournament_name": tournament_name,
+                "event_season": season_name,
+                "event_date": event_date,
+            },
+        )
+
+        # 2. Get points awarded list for this event
+        calculated_points = calc_results.event_points(event_key)
+
+        for item in calculated_points:
+            fencer_id = item["fencer_id"]
+            first_name = item["first_name"]
+            last_name = item["last_name"]
+            pts = item["points"]
+
+            # Fencer DB Object
+            fencer_obj, _ = Fencer.objects.get_or_create(
+                fencer_id=fencer_id,
+                defaults={
+                    "given_name": first_name,
+                    "family_name": last_name,
+                },
             )
-            event_details.save()
 
-def check_fencers(results):
-    """Make sure all the fencer exist in the database"""
-    for fencer in results.fencers:
-        fid = results.fencers[fencer]['FencerID']
-
-        Fencer.objects.get_or_create(fencer_id=fid, defaults={
-            'given_name': results.fencers[fencer]['FirstName'],
-            'family_name': results.fencers[fencer]['LastName']
-        })
-
-
-def check_points(results):
-    """Load all the points into the database"""
-    for event_results in results.events:
-        points_awarded = results.event_points(event_results)
-        for entry in points_awarded:
-            eid = entry['event_id']
-            fid = entry['fencer_id']
-            foreign_eid = Event.objects.get(event_id=eid)
-            foreign_fid = Fencer.objects.get(fencer_id=fid)
-            
+            # Points DB Object
             Points.objects.update_or_create(
-                competitor_id=foreign_fid,
-                event_placed=foreign_eid,
-                defaults={'points': entry['points']}
+                competitor_id=fencer_obj,
+                event_placed=event_obj,
+                defaults={
+                    "points": pts,
+                },
             )
 
-def load_all(file, season):
-    """Load everything in a file"""
-    results = load_results(file)
-    check_events(results, season)
-    check_fencers(results)
-    check_points(results)
+    print(f"Successfully loaded '{file_path}' into the database!")
+
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1:
+        load_points_from_csv(sys.argv[1])
